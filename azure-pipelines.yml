@@ -1,0 +1,32 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- complete
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: InstallSSHKey@0
+    displayName: 'Install SSH Private Key'
+    inputs:
+      # Name of the secure file you uploaded to the Library
+      sshKeySecureFile: 'id_rsa_secure' 
+      # The host entry that would be in your known_hosts file (e.g., github.com or the server IP)
+      knownHostsEntry: '$(SSH_KNOWN_HOSTS_ENTRY)' 
+  - script: |
+      echo 'SSH key installed and agent running. Can now use SSH commands.'
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      APPSWEEP_CLI_DIR=$(mktemp -d)
+      curl --retry 3 \
+        --retry-max-time 120 \
+        --retry-all-errors \
+        -sS https://platform.guardsquare.com/cli/install.sh | sh -s -- --yes \
+          --bin-dir "$APPSWEEP_CLI_DIR"
+      $APPSWEEP_CLI_DIR/guardsquare download licenses --ssh-agent
