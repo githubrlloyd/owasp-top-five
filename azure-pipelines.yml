@@ -14,9 +14,7 @@ steps:
   displayName: 'Install SSH Private Key'
   inputs:
     # Name of the secure file you uploaded to the Library
-    sshKeySecureFile: 'id_rsa_secure' 
-    # The host entry that would be in your known_hosts file (e.g., github.com or the server IP)
-    knownHostsEntry: '$(SSH_KNOWN_HOSTS_ENTRY)' 
+    sshKeySecureFile: 'id_rsa_secure'  
 - task: Bash@3
   inputs:
     targetType: 'inline'
